@@ -1,10 +1,13 @@
 import pygame
 import random
+import pygame.mixer
 
 ancho_y_alto = (800, 600)
 pantalla = pygame.display.set_mode(ancho_y_alto)
 color_rojo = (255, 15, 0)
-errores = 0
+pygame.mixer.init()
+error = pygame.mixer.Sound("error.wav")
+pygame.mixer.Sound.set_volume(error, 0.4)
 
 def mostrar_texto(texto, x, y):
 
@@ -28,7 +31,7 @@ def dibujar_cruces(pantalla, errores):
 
 def nuevo_juego():
     numero_random = random.randint(1, 9)
-    
+    errores = 0
     intentos = []
 
     return {
@@ -37,15 +40,16 @@ def nuevo_juego():
         "intentos": intentos
     }
 
-def procesar_tecla(tecla, numero_secreto):
+def procesar_tecla(tecla, estado_juego):
+    if tecla == estado_juego['numero_random']:
+        return True
+    elif tecla != estado_juego['numero_random']:
+        estado_juego["errores"] += 1
+        pygame.mixer.Sound.play(error)
+        estado_juego["intentos"].append(tecla)
+        return False
 
-    juego = nuevo_juego()
-
-    if tecla == numero_secreto:
-        mostrar_texto("GANASTE", 400, 300)
-    elif tecla != numero_secreto:
-        juego["errores"] += 1
-        print(juego["errores"])
+ 
 
         
 

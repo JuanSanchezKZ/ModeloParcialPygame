@@ -2,6 +2,7 @@ import pygame
 import pygame.time
 import random
 from funciones import mostrar_texto, dibujar_cruces, nuevo_juego, procesar_tecla
+import sys, time
 
 # Inicializar Pygame
 
@@ -38,43 +39,71 @@ sonido_error = pygame.mixer.Sound("error.wav")
 
 datos_juego = nuevo_juego()
 
+
 def jugar():
 
+    ## Flag para definir si gano el juego    
+
+    gano = False
+
     while True:
-        # Gestión de eventos (cerrar ventana etc.)
+       
+        ## Limitación 30 fotogramas por segundos
+
+        clock.tick(30)
+
+         # Gestión de eventos (cerrar ventana etc.)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
             elif event.type == pygame.KEYDOWN:
-
+                ## Verificamos teclas y llamamos a la funcion para procesarla
                 if event.key == pygame.K_1:
-                    procesar_tecla(1, datos_juego['numero_random'])
+                    gano = procesar_tecla(1, datos_juego)
                 elif event.key == pygame.K_2:
-                    procesar_tecla(2, datos_juego['numero_random'])
+                    gano = procesar_tecla(2, datos_juego)
                 elif event.key == pygame.K_3:
-                    procesar_tecla(3, datos_juego['numero_random'])
+                    gano = procesar_tecla(3, datos_juego)
                 elif event.key == pygame.K_4:
-                    procesar_tecla(4, datos_juego['numero_random'])
+                    gano = procesar_tecla(4, datos_juego)
                 elif event.key == pygame.K_5:
-                    procesar_tecla(5, datos_juego['numero_random'])
+                    gano = procesar_tecla(5, datos_juego)
                 elif event.key == pygame.K_6:
-                    procesar_tecla(6, datos_juego['numero_random'])
+                    gano = procesar_tecla(6, datos_juego)
                 elif event.key == pygame.K_7:
-                    procesar_tecla(7, datos_juego['numero_random'])
+                    gano = procesar_tecla(7, datos_juego)
                 elif event.key == pygame.K_8:
-                    procesar_tecla(8, datos_juego['numero_random'])
+                    gano = procesar_tecla(8, datos_juego)
                 elif event.key == pygame.K_9:
-                    procesar_tecla(9, datos_juego['numero_random'])
+                    gano = procesar_tecla(9, datos_juego)
 
-        clock.tick(30)
-
+        ## llamamos la función de dibujar cruces con la cantidad de errores
         dibujar_cruces(pantalla, datos_juego['errores'])
 
+        ## Si llega a 4 errores mostramos texto de que perdio y cerramos el juego
+        if datos_juego["errores"] >= 4:
+            mostrar_texto(f"Perdiste. El número era {datos_juego['numero_random']}", 250, 300)
+            pygame.display.flip()
+            time.sleep(3)
+            pygame.quit()
+            sys.exit()
+
+        ## Si gano mostramos texto de que gano y cerramos tambien
+        if gano:
+            mostrar_texto(f"¡Ganaste! El número era {datos_juego['numero_random']}", 250, 300)
+            pygame.display.flip()
+            time.sleep(3)
+            pygame.quit()
+            sys.exit()
+
+        ## actualizamos la pantalla
         pygame.display.flip()  
 
-# Dibujar en la ventana
+        # Dibujar de blanco la pantalla
         pantalla.fill(color_blanco)
 
+# llamamos la funcion principal
 jugar()
 
