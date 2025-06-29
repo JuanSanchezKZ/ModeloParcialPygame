@@ -3,6 +3,7 @@ import pygame.time
 import random
 from funciones import mostrar_texto, dibujar_cruces, nuevo_juego, procesar_tecla
 import sys, time
+from personaje import *
 
 # Inicializar Pygame
 
@@ -38,6 +39,8 @@ sonido_error = pygame.mixer.Sound("error.wav")
 ## Cargar nuevo juego
 
 datos_juego = nuevo_juego()
+
+personaje = crear_personaje(100, 400, 150, 150)
 
 
 def jugar():
@@ -82,6 +85,14 @@ def jugar():
         ## llamamos la función de dibujar cruces con la cantidad de errores
         dibujar_cruces(pantalla, datos_juego['errores'])
 
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_LEFT]:
+            update(personaje, -10)
+        if keys[pygame.K_RIGHT]:
+            update(personaje, 10)
+            
+
         ## Si llega a 4 errores mostramos texto de que perdio y cerramos el juego
         if datos_juego["errores"] >= 4:
             mostrar_texto(f"Perdiste. El número era {datos_juego['numero_random']}", 250, 300)
@@ -97,6 +108,8 @@ def jugar():
             time.sleep(3)
             pygame.quit()
             sys.exit()
+
+        pantalla.blit(personaje["surface"], personaje["rect_pos"])
 
         ## actualizamos la pantalla
         pygame.display.flip()  
